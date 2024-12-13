@@ -296,8 +296,6 @@ class TrajCLTrainer:
                          .format(i_ep, loss_ep_avg, delta, time.time() - _time_ep, time.time() - training_starttime,
                                  time.time() - training_starttime))
 
-            self.save_checkpoint()
-            self.test()
             # early stopping
             if abs(loss_ep_avg - best_loss_train) > 1e-2:
                 best_epoch = i_ep
