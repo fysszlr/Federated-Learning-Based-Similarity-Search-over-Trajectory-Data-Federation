@@ -2,7 +2,7 @@ import sys
 import logging
 import argparse
 
-from model.fed_trajcl import TrajCLTrainer, lcss_test
+from ourmethod.fed_trainer import TrajCLTrainer
 from config import Config
 from utils import tool_funcs
 
@@ -11,12 +11,12 @@ def parse_args():
     # dont set default value here! -- it will incorrectly overwrite the values in config.py.
     # config.py is the correct place for default values.
 
-    parser = argparse.ArgumentParser(description="TrajCL/train.py")
+    parser = argparse.ArgumentParser(description="train.py")
     parser.add_argument('--dumpfile_uniqueid', type=str, help='see config.py')
     parser.add_argument('--seed', type=int, help='')
     parser.add_argument('--dataset', type=str, help='')
-    parser.add_argument('--moon_loss_weight', type=float, default=0.1, help='')
-    parser.add_argument('--ldp', type=int, help='1? use ldp: not use ldp')
+    parser.add_argument('--cell_size', type=int, help='')
+    parser.add_argument('--test_type', type=str, help='')
 
     args = parser.parse_args()
     return dict(filter(lambda kv: kv[1] is not None, vars(args).items()))
@@ -43,4 +43,3 @@ if __name__ == '__main__':
     trajcl.test()
     # lcss_test()
     # trajcl.knn_test('discrete_frechet')
-    # trajcl.personal_test()

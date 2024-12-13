@@ -1,8 +1,6 @@
-import numpy as np
 import torch.utils.data
 
-from model.fed_trajcl import *
-from model.accountant import GaussianMomentsAccountant
+from ourmethod.fed_trainer import *
 
 
 class Client(BaseClient):
@@ -69,7 +67,6 @@ class Server(BaseServer):
         self.clipped_updates = []
         self.m = 0.0
         self.global_model = None
-        self.acc = GaussianMomentsAccountant(Config.cls_num)
 
     def compute_updates(self):
         self.updates = [self.weights[i] - np.expand_dims(self.global_model[i], -1) for i in range(self.num_weights)]
@@ -98,30 +95,6 @@ class Server(BaseServer):
 
         self.clipped_updates = [self.updates[i] / factor[i] for i in range(self.num_weights)]
         # print("clipped_updates:", self.clipped_updates)
-
-    def update_via_gaussian_mechanism(self):
-        self.clip_updates()
-        self.m = float(self.clipped_updates[0].shape[-1])
-        mean_clipped_updates = [np.mean(self.clipped_updates[i], -1) for i in range(self.num_weights)]
-        # print("mean_clipped_updates:", mean_clipped_updates)
-
-        gaussian_noise = [(1.0 / self.m * np.random.normal(loc=0.0, scale=float(self.sigma * self.median[i]),
-                                                           size=mean_clipped_updates[i].shape)) for i in
-                          range(self.num_weights)]
-        # print("gaussian_noise:", gaussian_noise)
-
-        sanitized_updates = [mean_clipped_updates[i] + gaussian_noise[i] for i in range(self.num_weights)]
-        # print("sanitized_updates:", sanitized_updates)
-
-        new_weights = [self.global_model[i] + sanitized_updates[i] for i in range(self.num_weights)]
-        # for new_weight in new_weights:
-        #     new_weight = np.array(new_weight) if not isinstance(new_weight, np.ndarray) else new_weight
-        #     print(new_weight.shape)
-        # print("new_weights:", new_weights)
-
-        self.model.load_parameters(new_weights)
-        self.acc.accumulate_privacy_spending(0, Config.sigma, self.n_clients_per_round)
-        return self.acc.get_privacy_spent(Config.epsilon)
 
     def aggregate_model(self, clients):
         for client in clients:
@@ -161,11 +134,6 @@ class Server(BaseServer):
 
         # aggregate params
         self.aggregate_model(clients)
-        if Config.ldp == 0:
-            delta = self.update_via_gaussian_mechanism()
-        else:
-            delta = 0
-
         self.aggregate_queue(clients)
 
         self.step += 1
@@ -173,4 +141,4 @@ class Server(BaseServer):
         if self.step % Config.trajcl_training_lr_degrade_step == 0:
             self.learning_rate *= Config.trajcl_training_lr_degrade_gamma
 
-        return clients, loss_ep_sum / self.n_clients_per_round, delta
+        return clients, loss_ep_sum / self.n_clients_per_round, 0

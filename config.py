@@ -2,6 +2,7 @@ import os
 import random
 import torch
 import numpy
+import time
 
 
 def set_seed(seed=-1):
@@ -17,7 +18,7 @@ def set_seed(seed=-1):
 
 class Config:
     debug = True
-    dumpfile_uniqueid = ''
+    dumpfile_uniqueid = str(time.time())
     seed = 2000
     # device = torch.device("cpu")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -36,8 +37,8 @@ class Config:
     max_lat = 0.0
     max_traj_len = 200
     min_traj_len = 5
-    cell_size = 1500.0 #original : 100.0
-    cellspace_buffer = 1500.0
+    cell_size = 1000 #original : 100
+    cellspace_buffer = 500
 
     # ===========TrajCL=============
     trajcl_batch_size = 128
@@ -46,12 +47,13 @@ class Config:
     moco_proj_dim = seq_embedding_dim // 2
     moco_nqueue = 2048
     moco_temperature = 0.05
+    test_type = 'distort'
 
-    trajcl_training_epochs = 20  # origin=20
+    trajcl_training_epochs = 20
     trajcl_training_bad_patience = 5
-    trajcl_training_lr = 0.001
+    trajcl_training_lr = 0.0001
     trajcl_training_lr_degrade_gamma = 0.5
-    trajcl_training_lr_degrade_step = 5
+    trajcl_training_lr_degrade_step = 1
     # origin mask subset
     trajcl_aug1 = 'mask'
     trajcl_aug2 = 'splicing'

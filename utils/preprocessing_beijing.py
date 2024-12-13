@@ -292,7 +292,7 @@ if __name__ == '__main__':
                         )
     Config.dataset = 'beijing'
     Config.post_value_updates()
-    # clean_and_output_data()
-    # init_cellspace()
-    # generate_newsimi_test_dataset()
+    clean_and_output_data()
+    init_cellspace()
+    generate_newsimi_test_dataset()
     traj_simi_computation('lcss')  # edr edwp discret_frechet hausdorff

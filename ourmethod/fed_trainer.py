@@ -239,7 +239,7 @@ class TrajCLTrainer:
 
     def __init__(self, str_aug1, str_aug2):
         # import model.FedAvg as Fed
-        import model.FCL as Fed
+        import ourmethod.fed_trajcl as Fed
         super(TrajCLTrainer, self).__init__()
 
         self.aug1 = get_aug_fn(str_aug1)
@@ -271,7 +271,7 @@ class TrajCLTrainer:
         self.server = Fed.Server(0, str_aug1, str_aug2, test_dataset)
         self.server.clients = self.clients
 
-        self.checkpoint_file = '{}/{}_TrajCL_best{}.pt'.format(Config.checkpoint_dir, Config.dataset_prefix,
+        self.checkpoint_file = '{}/{}_TrajCL_best_{}.pt'.format(Config.checkpoint_dir, Config.dataset_prefix,
                                                                Config.dumpfile_uniqueid)
 
     def train(self):
@@ -310,16 +310,6 @@ class TrajCLTrainer:
                              .format(time.time() - training_starttime, best_epoch, best_loss_train))
                 break
 
-            # if time.time() - training_starttime > 10 * 60:
-            #     logging.info("[Training] END! @={}, best_epoch={}, best_loss_train={:.6f}" \
-            #                  .format(time.time() - training_starttime, best_epoch, best_loss_train))
-            #     break
-
-            # self.test()
-
-            # if delta > Config.bound:
-            #     break
-
         return {'enc_train_time': time.time() - training_starttime, \
                 'enc_train_gpu': training_gpu_usage, \
                 'enc_train_ram': training_ram_usage}
@@ -329,40 +319,26 @@ class TrajCLTrainer:
         # 1. read best model
         # 2. read trajs from file, then -> embeddings
         # 3. run testing
-        # n. varying db size, downsampling rates, and distort rates
+        # n. varying downsampling rates, and distort rates
 
         logging.info('[Test]start.')
         self.load_checkpoint()
         self.server.model.eval()
 
-        # varying db size
-        with open(Config.dataset_file + '_newsimi_raw.pkl', 'rb') as fh:
-            q_lst, db_lst = pickle.load(fh)
-            querys, databases = self.test_merc_seq_to_embs(q_lst, db_lst)
-            dists = torch.cdist(querys, databases, p=1)  # [1000, 100000]
-            targets = torch.diag(dists)  # [1000]
-            results = []
-            for n_db in range(20000, 100001, 20000):
-                rank = torch.sum(torch.le(dists[:, 0:n_db].T, targets)).item() / len(q_lst)
-                results.append(rank)
-            logging.info(
-                '[EXPFlag]task=newsimi,encoder=TrajCL,varying=dbsize,r1={:.3f},r2={:.3f},r3={:.3f},r4={:.3f},r5={:.3f}' \
-                    .format(*results))
-
         # varying downsampling; varying distort
-        for vt in ['downsampling', 'distort']:
-            results = []
-            for rate in [0.1, 0.2, 0.3, 0.4, 0.5]:
-                with open(Config.dataset_file + '_newsimi_' + vt + '_' + str(rate) + '.pkl', 'rb') as fh:
-                    q_lst, db_lst = pickle.load(fh)
-                    querys, databases = self.test_merc_seq_to_embs(q_lst, db_lst)
-                    dists = torch.cdist(querys, databases, p=1)  # [1000, 100000]
-                    targets = torch.diag(dists)  # [1000]
-                    result = torch.sum(torch.le(dists.T, targets)).item() / len(q_lst)
-                    results.append(result)
-            logging.info(
-                '[EXPFlag]task=newsimi,encoder=TrajCL,varying={},r1={:.3f},r2={:.3f},r3={:.3f},r4={:.3f},r5={:.3f}' \
-                    .format(vt, *results))
+        vt = Config.test_type
+        results = []
+        for rate in [0.1, 0.2, 0.3, 0.4, 0.5]:
+            with open(Config.dataset_file + '_newsimi_' + vt + '_' + str(rate) + '.pkl', 'rb') as fh:
+                q_lst, db_lst = pickle.load(fh)
+                querys, databases = self.test_merc_seq_to_embs(q_lst, db_lst)
+                dists = torch.cdist(querys, databases, p=1)  # [1000, 100000]
+                targets = torch.diag(dists)  # [1000]
+                result = torch.sum(torch.le(dists.T, targets)).item() / len(q_lst)
+                results.append(result)
+        logging.info(
+            '[EXPFlag]task=newsimi,encoder=TrajCL,varying={},r1={:.3f},r2={:.3f},r3={:.3f},r4={:.3f},r5={:.3f}' \
+                .format(vt, *results))
         return
 
     @torch.no_grad()
@@ -497,33 +473,9 @@ class TrajCLTrainer:
 
 @torch.no_grad()
 def lcss_test():
-    # 1. read best model
-    # 2. read trajs from file, then -> embeddings
-    # 3. run testing
-    # n. varying db size, downsampling rates, and distort rates
-
     logging.info('[Lcss_Test]start.')
     import traj_dist.distance as tdist
     from tqdm import tqdm
-
-    # varying db size
-    with open(Config.dataset_file + '_newsimi_raw.pkl', 'rb') as fh:
-        q_lst, db_lst = pickle.load(fh)
-        querys, databases = q_lst, db_lst
-        n_querys = len(querys)
-        n_databases = len(databases)
-        dists = np.zeros((n_querys, n_databases))
-        for i, query in tqdm(enumerate(querys), desc='start db size lcss count', unit='trajs'):
-            for j, database in enumerate(databases):
-                dists[i, j] = tdist.lcss(np.array(query), np.array(database))
-        targets = np.diag(dists)  # [1000]
-        results = []
-        for n_db in range(2000, 10001, 2000):
-            rank = np.sum(np.sum(dists[:, :n_db] <= targets[:, np.newaxis], axis=1)) / len(q_lst)
-            results.append(rank)
-        logging.info(
-            '[EXPFlag]task=newsimi,encoder=TrajCL,varying=dbsize,r1={:.3f},r2={:.3f},r3={:.3f},r4={:.3f},r5={:.3f}' \
-                .format(*results))
 
     # varying downsampling; varying distort
     for vt in ['downsampling', 'distort']:
@@ -539,7 +491,7 @@ def lcss_test():
                     for j, database in enumerate(databases):
                         dists[i, j] = tdist.lcss(np.array(query), np.array(database))
                 targets = np.diag(dists)  # [1000]
-                rank = np.sum(np.sum(dists[:, :n_db] <= targets[:, np.newaxis], axis=1)) / len(q_lst)
+                rank = np.sum(np.sum(dists[:, :n_databases] <= targets[:, np.newaxis], axis=1)) / len(q_lst)
                 results.append(rank)
         logging.info(
             '[EXPFlag]task=newsimi,encoder=TrajCL,varying={},r1={:.3f},r2={:.3f},r3={:.3f},r4={:.3f},r5={:.3f}' \

@@ -91,7 +91,7 @@ def main(name, files):
 
     new_df = pd.DataFrame(data)
 
-    new_df.to_csv(base_dir + f'../{name}2.csv', index=False)
+    new_df.to_csv(base_dir + f'../{name}.csv', index=False)
 
 
 if __name__ == "__main__":

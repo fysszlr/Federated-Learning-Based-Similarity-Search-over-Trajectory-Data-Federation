@@ -1,7 +1,6 @@
-import numpy as np
 import torch.utils.data
 
-from model.fed_trajcl import *
+from ourmethod.fed_trainer import *
 
 
 class Client(BaseClient):

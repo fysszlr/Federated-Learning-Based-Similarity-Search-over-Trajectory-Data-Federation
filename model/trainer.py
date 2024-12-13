@@ -68,7 +68,7 @@ class TrajCL(nn.Module):
 
 
     def load_checkpoint(self):
-        checkpoint_file = '{}/{}_TrajCL_best{}.pt'.format(Config.checkpoint_dir, Config.dataset_prefix, Config.dumpfile_uniqueid)
+        checkpoint_file = '{}/{}_TrajCL_best{}.pt'.format(Config.checkpoint_dir, Config.dataset_prefix, '')
         checkpoint = torch.load(checkpoint_file)
         self.load_state_dict(checkpoint['model_state_dict'])
         return self
@@ -301,8 +301,7 @@ class TrajCLTrainer:
         checkpoint = torch.load(self.checkpoint_file)
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.model.to(Config.device)
-        
-        return
+
 
 
 
