@@ -11,7 +11,7 @@ from torch.nn.utils.rnn import pad_sequence
 from functools import partial
 
 from ldp.main import get_ldp_dataset
-from ourmethod.moco import MoCo
+from model.moco import MoCo
 from model.dual_attention import DualSTB
 from utils.data_loader import read_traj_dataset
 from utils.traj import *
@@ -238,8 +238,8 @@ def collate_for_test(trajs, cellspace, embs):
 class TrajCLTrainer:
 
     def __init__(self, str_aug1, str_aug2):
-        # import model.fedavg_baselines as Fed
-        import ourmethod.fed_trajcl as Fed
+        import model.fedavg_baselines as Fed
+        # import ourmethod.fed_trajcl as Fed
         super(TrajCLTrainer, self).__init__()
 
         self.aug1 = get_aug_fn(str_aug1)

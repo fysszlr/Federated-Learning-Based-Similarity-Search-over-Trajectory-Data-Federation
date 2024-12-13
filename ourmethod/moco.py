@@ -43,8 +43,8 @@ class MoCo(nn.Module):
         # create the queue
         self.register_buffer("queue", torch.randn(nout, queue_size))
         self.queue = nn.functional.normalize(self.queue, dim=0)
-        # self.register_buffer("global_queue", torch.randn(nout, Config.cls_num * queue_size))
-        # self.global_queue = nn.functional.normalize(self.global_queue, dim=0)
+        self.register_buffer("global_queue", torch.randn(nout, Config.cls_num * queue_size))
+        self.global_queue = nn.functional.normalize(self.global_queue, dim=0)
 
         self.register_buffer("queue_ptr", torch.zeros(1, dtype=torch.long))
 
@@ -136,7 +136,7 @@ class MoCo(nn.Module):
         labels = torch.zeros(logits.shape[0], dtype=torch.long).cuda()
 
         # dequeue and enqueue
-        self._dequeue_and_enqueue(k)
+        self.fcl_dequeue_and_enqueue(k)
 
         return logits, labels
 

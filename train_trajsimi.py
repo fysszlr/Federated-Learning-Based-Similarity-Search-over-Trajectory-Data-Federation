@@ -4,8 +4,6 @@ import argparse
 
 from config import Config
 from utils import tool_funcs
-from task.fed_trajsimi import TrajSimi
-from model.trainer import TrajCL
 
 
 def parse_args():
@@ -17,6 +15,7 @@ def parse_args():
     parser.add_argument('--dataset', type=str, help='')
 
     parser.add_argument('--trajsimi_measure_fn_name', type=str, help='')
+    parser.add_argument('--method', type=str, help='')
 
     args = parser.parse_args()
     return dict(filter(lambda kv: kv[1] is not None, vars(args).items()))
@@ -27,9 +26,17 @@ def main():
     fn_name = Config.trajsimi_measure_fn_name
     metrics = tool_funcs.Metrics()
 
+    if Config.method == 'fcl':
+        from ourmethod.fed_trajcl import TrajCL
+        from task.fed_trajsimi import TrajSimi
+    else:
+        from model.trainer import TrajCL
+        from task.trajSimi_fedAvg import TrajSimi
+
     trajcl = TrajCL()
     trajcl.load_checkpoint()
     trajcl.to(Config.device)
+
     task = TrajSimi(trajcl)
     task.train()
     task.load_checkpoint()

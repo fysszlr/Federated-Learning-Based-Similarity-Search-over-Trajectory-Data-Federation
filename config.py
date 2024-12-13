@@ -30,6 +30,7 @@ class Config:
     dataset_file = 'JKSX'
     dataset_cell_file = ''
     dataset_embs_file = ''
+    method = 'fcl'
 
     min_lon = 0.0
     min_lat = 0.0
@@ -49,9 +50,9 @@ class Config:
     moco_temperature = 0.05
     test_type = 'distort'
 
-    trajcl_training_epochs = 20
-    trajcl_training_bad_patience = 5
-    trajcl_training_lr = 0.0001
+    trajcl_training_epochs = 4
+    trajcl_training_bad_patience = 2
+    trajcl_training_lr = 0.00001
     trajcl_training_lr_degrade_gamma = 0.5
     trajcl_training_lr_degrade_step = 1
     # origin mask subset
