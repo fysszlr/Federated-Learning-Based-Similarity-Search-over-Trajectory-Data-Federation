@@ -6,6 +6,11 @@
 * `pip install -r reqirments.txt`
 * dataset: the Beijing Taxi Dataset
 
+### Dataset
+
+* you may download at [T-Drive trajectory data sample - Microsoft Research](https://www.microsoft.com/en-us/research/publication/t-drive-trajectory-data-sample/)
+* save the dataset in the 'data' directory.
+
 ### Data processing
 
 * use `bash scripts/data_processing.sh`
