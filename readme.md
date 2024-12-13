@@ -12,10 +12,21 @@
 
 ### Run
 
+#### ourmethod
+
 * distort
   * use `bash scripts/run_fed-trajCl_distort.sh`
 * downsampling
   * use `bash scripts/run_fed-trajCl_downsampling.sh`
 * hit_ratio
   * use `bash scripts/run_fed-trajCl_simi.sh`
+
+#### fedavg
+
+* distort
+  * use `bash scripts/run_fedavg_distort.sh`
+* downsampling
+  * use `bash scripts/run_fedavg_downsampling.sh`
+* hit_ratio
+  * use `bash scripts/run_fedavg_simi.sh`
 

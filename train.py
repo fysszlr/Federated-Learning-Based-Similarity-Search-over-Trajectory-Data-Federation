@@ -38,12 +38,14 @@ if __name__ == '__main__':
     logging.info('=================================')
 
     if Config.method == 'fcl':
-        from ourmethod.fed_trainer import TrajCLTrainer, lcss_test
+        from model.fedtrajcl_with_buffer.fed_trainer import TrajCLTrainer, lcss_test
+    elif Config.method=='fedavg':
+        from model.fedtrajcl.fed_trainer import TrajCLTrainer, lcss_test
     else:
-        from model.fed_trainer import TrajCLTrainer, lcss_test
+        from model.trajcl.trainer import TrajCLTrainer
     trajcl = TrajCLTrainer(Config.trajcl_aug1, Config.trajcl_aug2)
     # trajcl.load_checkpoint()
     trajcl.train()
     trajcl.test()
-    lcss_test()
+    # lcss_test()
     # trajcl.knn_test('discrete_frechet')

@@ -27,11 +27,11 @@ def main():
     metrics = tool_funcs.Metrics()
 
     if Config.method == 'fcl':
-        from ourmethod.fed_trajcl import TrajCL
-        from task.fed_trajsimi import TrajSimi
+        from model.fedtrajcl_with_buffer.fed_trajcl import TrajCL
+        from model.fedtrajcl_with_buffer.fed_trajsimi import TrajSimi
     else:
-        from model.trainer import TrajCL
-        from task.trajSimi_fedAvg import TrajSimi
+        from model.trajcl.trainer import TrajCL
+        from model.fedtrajcl.trajSimi_fedAvg import TrajSimi
 
     trajcl = TrajCL()
     trajcl.load_checkpoint()

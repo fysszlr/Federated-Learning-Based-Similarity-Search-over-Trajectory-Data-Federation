@@ -1,10 +1,6 @@
-import torch
-import torch.nn as nn
 import torch.utils.data
 import math
-import time
-from tqdm import tqdm
-from task.fed_trajsimi import *
+from model.fedtrajcl_with_buffer.fed_trajsimi import *
 
 
 class Client(BaseClient):

@@ -162,7 +162,7 @@ class TrajSimi():
         self.cellspace = pickle.load(open(Config.dataset_cell_file, 'rb'))
         self.cellembs = pickle.load(open(Config.dataset_embs_file, 'rb')).to(Config.device)  # tensor
 
-        import task.trajSimi_fedAvg as fed
+        import model.fedtrajcl.trajSimi_fedAvg as fed
         self.clients = []
         for i in range(Config.cls_num):
             id = i + 1

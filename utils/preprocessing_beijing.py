@@ -19,7 +19,7 @@ from config import Config
 from utils import tool_funcs
 from utils.cellspace import CellSpace
 from utils.tool_funcs import lonlat2meters
-from model.node2vec_ import train_node2vec
+from layers.node2vec_ import train_node2vec
 from utils.edwp import edwp
 from utils.data_loader import read_trajsimi_traj_dataset
 

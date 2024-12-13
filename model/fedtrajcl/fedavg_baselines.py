@@ -1,6 +1,6 @@
 import torch.utils.data
 
-from ourmethod.fed_trainer import *
+from model.fedtrajcl_with_buffer.fed_trainer import *
 
 
 class Client(BaseClient):

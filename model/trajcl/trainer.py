@@ -1,5 +1,5 @@
 import sys
-sys.path.append('..')
+sys.path.append('../..')
 
 import time
 import logging
@@ -10,9 +10,8 @@ from torch.utils.data.dataloader import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from functools import partial
 
-from config import Config
-from model.moco import MoCo
-from model.dual_attention import DualSTB
+from model.fedtrajcl.moco import MoCo
+from layers.dual_attention import DualSTB
 from utils.data_loader import read_traj_dataset
 from utils.traj import *
 from utils import tool_funcs
@@ -225,24 +224,11 @@ class TrajCLTrainer:
         # 1. read best model
         # 2. read trajs from file, then -> embeddings
         # 3. run testing
-        # n. varying db size, downsampling rates, and distort rates
+        # n. varying downsampling rates, and distort rates
         
         logging.info('[Test]start.')
         self.load_checkpoint()
         self.model.eval()
-
-        # varying db size
-        with open(Config.dataset_file + '_newsimi_raw.pkl', 'rb') as fh:
-            q_lst, db_lst = pickle.load(fh)
-            querys, databases = self.test_merc_seq_to_embs(q_lst, db_lst)
-            dists = torch.cdist(querys, databases, p = 1) # [1000, 100000]
-            targets = torch.diag(dists) # [1000]
-            results = []
-            for n_db in range(20000,100001,20000):
-                rank = torch.sum(torch.le(dists[:,0:n_db].T, targets)).item() / len(q_lst)
-                results.append(rank)
-            logging.info('[EXPFlag]task=newsimi,encoder=TrajCL,varying=dbsize,r1={:.3f},r2={:.3f},r3={:.3f},r4={:.3f},r5={:.3f}' \
-                                            .format(*results))
 
         # varying downsampling; varying distort
         for vt in ['downsampling', 'distort']:
