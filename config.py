@@ -50,21 +50,21 @@ class Config:
     moco_temperature = 0.05
     test_type = 'distort'
 
-    trajcl_training_epochs = 4
-    trajcl_training_bad_patience = 2
-    trajcl_training_lr = 0.00001
+    trajcl_training_epochs = 20
+    trajcl_training_bad_patience = 5
+    trajcl_training_lr = 0.0005
     trajcl_training_lr_degrade_gamma = 0.5
-    trajcl_training_lr_degrade_step = 1
+    trajcl_training_lr_degrade_step = 5
     # origin mask subset
     trajcl_aug1 = 'mask'
     trajcl_aug2 = 'splicing'
     trajcl_local_mask_sidelen = cell_size * 11
 
     trans_attention_head = 4
-    trans_attention_dropout = 0.1
+    trans_attention_dropout = 0.4
     trans_attention_layer = 2
     trans_pos_encoder_dropout = 0.1
-    trans_hidden_dim = 2048
+    trans_hidden_dim = 1024
 
     traj_simp_dist = 100
     traj_shift_dist = 200

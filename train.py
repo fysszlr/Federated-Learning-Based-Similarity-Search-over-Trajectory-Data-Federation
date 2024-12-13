@@ -17,6 +17,7 @@ def parse_args():
     parser.add_argument('--cell_size', type=int, help='')
     parser.add_argument('--test_type', type=str, help='')
     parser.add_argument('--method', type=str, help='')
+    parser.add_argument('--trans_hidden_dim', type=int, default=2048, help='')
 
     args = parser.parse_args()
     return dict(filter(lambda kv: kv[1] is not None, vars(args).items()))
