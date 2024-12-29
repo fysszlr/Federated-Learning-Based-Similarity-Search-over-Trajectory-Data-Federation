@@ -12,10 +12,16 @@
 
 ### Data processing
 
+#### Porto
 * use `bash scripts/data_processing.sh`
 
-### Run
+#### Beijing
+1. use utils/beijing2traj.py to convert the original trajectory points of the Beijing dataset into trajectories. 
+2. save the file obtained in the first step to data/beijing.csv. 
+3. use utils/preprocessing_beijing.py to process the data.
 
+### Run
+> If you are using beijing dataset, you may modify all 'dataset' field in scripts to 'beijing'.
 #### ourmethod
 
 * distort
@@ -33,4 +39,3 @@
   * use `bash scripts/run_fedavg_downsampling.sh`
 * hit_ratio
   * use `bash scripts/run_fedavg_simi.sh`
-
