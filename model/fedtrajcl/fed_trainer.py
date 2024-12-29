@@ -10,7 +10,6 @@ from torch.utils.data.dataloader import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from functools import partial
 
-from ldp.main import get_ldp_dataset
 from model.fedtrajcl.moco import MoCo
 from layers.dual_attention import DualSTB
 from utils.data_loader import read_traj_dataset

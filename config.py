@@ -18,7 +18,7 @@ def set_seed(seed=-1):
 
 class Config:
     debug = True
-    dumpfile_uniqueid = str(time.time())
+    dumpfile_uniqueid = '' # str(time.time())
     seed = 2000
     # device = torch.device("cpu")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -38,8 +38,8 @@ class Config:
     max_lat = 0.0
     max_traj_len = 200
     min_traj_len = 5
-    cell_size = 1000 #original : 100
-    cellspace_buffer = 500
+    cell_size = 100
+    cellspace_buffer = 50
 
     # ===========TrajCL=============
     trajcl_batch_size = 128
@@ -52,7 +52,7 @@ class Config:
 
     trajcl_training_epochs = 20
     trajcl_training_bad_patience = 5
-    trajcl_training_lr = 0.0005
+    trajcl_training_lr = 0.001
     trajcl_training_lr_degrade_gamma = 0.5
     trajcl_training_lr_degrade_step = 5
     # origin mask subset
@@ -61,10 +61,10 @@ class Config:
     trajcl_local_mask_sidelen = cell_size * 11
 
     trans_attention_head = 4
-    trans_attention_dropout = 0.4
+    trans_attention_dropout = 0.1
     trans_attention_layer = 2
     trans_pos_encoder_dropout = 0.1
-    trans_hidden_dim = 1024
+    trans_hidden_dim = 2048
 
     traj_simp_dist = 100
     traj_shift_dist = 200

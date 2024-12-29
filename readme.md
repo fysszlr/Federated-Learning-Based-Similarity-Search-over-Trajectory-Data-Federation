@@ -8,8 +8,7 @@
 
 ### Dataset
 
-* you may download at [T-Drive trajectory data sample - Microsoft Research](https://www.microsoft.com/en-us/research/publication/t-drive-trajectory-data-sample/)
-* save the dataset in the 'data' directory.
+* For privacy reasons, we are unable to provide the Beijing taxi dataset. If you wish to use the Porto dataset, you can download it from [Porto Taxi Trajectory Data](https://www.kaggle.com/datasets/crailtap/taxi-trajectory).
 
 ### Data processing
 
